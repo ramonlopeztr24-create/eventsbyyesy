@@ -1,0 +1,9 @@
+# Sistema
+.DS_Store
+
+# Respaldos locales del HTML
+index.backup-*.html
+
+# Artefactos de pruebas/automatización
+.playwright-mcp/
+*.log

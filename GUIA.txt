@@ -1,0 +1,44 @@
+╔══════════════════════════════════════════════════════════════╗
+   EVENTSBYYESY · Guía rápida para cambiar el sitio
+╚══════════════════════════════════════════════════════════════╝
+
+CÓMO ABRIR EL SITIO
+  Doble clic en  index.html  (se abre en tu navegador).
+
+FOTOS  (carpeta /photos)
+  logo.png ............ tu logo
+  galeria-1..5.jpg .... fotos de la galería
+  sala-vacia2.jpg ..... salón vacío (lente "antes")
+  + las demás sala-*.jpg se usan en el hero
+
+REELS QUE SE REPRODUCEN SOLOS  (la sección "Míralo en video")
+  Ahora muestran una foto de portada y abren Instagram al tocarlas.
+  Para que se reproduzcan SOLOS (en bucle, sin sonido) como videos:
+    1) Descarga o graba tus 3 reels como video .mp4
+    2) Guárdalos en /photos con estos nombres EXACTOS:
+         reel-1.mp4   reel-2.mp4   reel-3.mp4
+    3) Listo: al recargar la página se reproducen solos.
+  (Si no pones los .mp4, igual se ven bien con la foto de portada.)
+
+TEXTOS QUE FALTAN POR PERSONALIZAR
+  • CONTACTO (footer): teléfono, WhatsApp e Instagram reales.
+      - Busca en index.html:  tel:+10000000000
+      - Y:  wa.me/10000000000   (pon tu número con código de país, sin +,
+        ej. 1714XXXXXXX)
+      - Y:  instagram.com/eventsbyyesy
+  • RESEÑAS: ahora son de MUESTRA (Amy T., Cynthia C., Alexsandra C.).
+      Reemplázalas por reseñas reales tuyas.
+  • PRECIOS: dice "desde $800 hasta $5,000 (estimado)". Cambia el texto
+      si quieres otro rango.
+
+PRECIOS / GOOGLE CALENDAR
+  • La sección de precios NO ofrece paquetes: solo muestra el rango
+    estimado $800–$5,000 e invita a pedir cotización.
+  • El formulario de reserva está LISTO para conectar a Google Calendar
+    (fase 2). En index.html busca:  GOOGLE CALENDAR
+    Ahí están las instrucciones técnicas para conectarlo.
+
+IDIOMA
+  El sitio está en español e inglés (botón ES / EN arriba a la derecha).
+  Si cambias un texto en español, cambia también su versión en inglés
+  (busca el bloque  const I18N  al final del archivo).
