@@ -1,10 +1,4 @@
 <!DOCTYPE html>
- ║
-  ║  • Tel / WhatsApp / Instagram: busca  CAMBIAR: CONTACTO              ║
-  ║  • Google Calendar: busca  ▼ GOOGLE CALENDAR ▼                       ║
-  ║  • Reseñas: busca  CAMBIAR: RESEÑAS  (ahora son de muestra)          ║
-  ╚══════════════════════════════════════════════════════════════════════╝
--->
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -1023,31 +1017,29 @@ btnPrev.addEventListener('click',()=>{if(current>0){current--;showStep(current)}
 form.addEventListener('input',e=>{const f=e.target.closest('.field');if(f&&f.classList.contains('error'))f.classList.remove('error')});
 showStep(0);
 
-/* ════ ▼ GOOGLE CALENDAR ▼  (fase 2 — aquí se conecta) ════
-   Cuando reserven, se crea un evento en el Google Calendar de Eventsbyyesy.
-   1) Google Cloud Console -> activa "Google Calendar API" -> credenciales.
-   2) Un pequeño backend (Apps Script / Cloud Function) recibe bookingData y
-      llama a calendar.events.insert(). NO pongas claves en este HTML.
-   3) Reemplaza el console.log por un fetch() a ese endpoint.
-   Mapeo del evento:
-     summary  = `${tipoEvento} de ${nombre}`
-     location = `${ciudad} (${lugar})`
-     start    = fechaEvento + horaLlegada   (montaje)
-     end      = fechaEvento + horaRecoger   (recoger)
-     timeZone = America/Los_Angeles
-   ════════════════════════════════════════════════════════ */
+/* ════ ▼ GOOGLE CALENDAR ▼  (conexión vía Google Apps Script) ════
+   Cuando alguien reserva, se crea un evento en el Google Calendar de la
+   cuenta dedicada de Eventsbyyesy. No hay contraseñas ni claves en el sitio:
+   el formulario solo envía los datos a un "Web App" de Google Apps Script
+   (ver el archivo  google-apps-script.gs  y la GUIA.txt).
+
+   PASO ÚNICO PARA ACTIVARLO: pega aquí abajo la URL que te da Google al
+   publicar el Web App (termina en /exec). Mientras esté vacío, el formulario
+   funciona pero solo muestra "¡Gracias!" sin crear el evento.            */
+const GCAL_ENDPOINT = ""; // <-- PEGA AQUÍ la URL .../exec del Web App
+
 async function submitBooking(d){
-  const calendarEvent={
-    summary:`${d.tipoEvento} de ${d.nombre}`,
-    location:`${d.ciudad} (${d.lugar})`,
-    description:`Tel: ${d.telefono}\nCorreo: ${d.correo||'—'}\nPresupuesto: ${d.presupuesto||'—'}\nDetalles: ${d.detalles||'—'}`,
-    start:{dateTime:`${d.fechaEvento}T${d.horaLlegada||'00:00'}:00`,timeZone:'America/Los_Angeles'},
-    end:{dateTime:`${d.fechaEvento}T${d.horaRecoger||'00:00'}:00`,timeZone:'America/Los_Angeles'}
-  };
-  // TODO: connect Google Calendar API here.
-  // await fetch('https://TU-ENDPOINT/crear-evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bookingData:d,calendarEvent})});
-  console.log('📋 bookingData:',d);
-  console.log('📅 calendarEvent:',calendarEvent);
+  if(GCAL_ENDPOINT){
+    // 'no-cors' + text/plain = envío directo a Apps Script sin bloqueos del navegador
+    await fetch(GCAL_ENDPOINT,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(d)
+    });
+  }else{
+    console.log('📋 bookingData (sin endpoint aún):',d);
+  }
   return true;
 }
 form.addEventListener('submit',async e=>{

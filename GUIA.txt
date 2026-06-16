@@ -31,12 +31,16 @@ TEXTOS QUE FALTAN POR PERSONALIZAR
   • PRECIOS: dice "desde $800 hasta $5,000 (estimado)". Cambia el texto
       si quieres otro rango.
 
-PRECIOS / GOOGLE CALENDAR
+PRECIOS
   • La sección de precios NO ofrece paquetes: solo muestra el rango
     estimado $800–$5,000 e invita a pedir cotización.
-  • El formulario de reserva está LISTO para conectar a Google Calendar
-    (fase 2). En index.html busca:  GOOGLE CALENDAR
-    Ahí están las instrucciones técnicas para conectarlo.
+
+GOOGLE CALENDAR  (conectar las reservas)
+  • Abre el archivo  google-apps-script.gs  y sigue los 8 pasos de arriba.
+  • Al final te da una URL (.../exec). Pégala en index.html en la línea:
+        const GCAL_ENDPOINT = "AQUI_LA_URL";
+  • Listo: cada reserva del sitio crea un evento en el Google Calendar
+    de esa cuenta de Gmail, sin contraseñas en el sitio.
 
 IDIOMA
   El sitio está en español e inglés (botón ES / EN arriba a la derecha).
