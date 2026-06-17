@@ -1029,17 +1029,42 @@ showStep(0);
    funciona pero solo muestra "¡Gracias!" sin crear el evento.            */
 const GCAL_ENDPOINT = "https://script.google.com/macros/s/AKfycbyaxgukipQdV_MX2a348KxYGMsEIbj7KysiPSKnMVElcuwaDmXNiAJtlzmP1MrViDB5/exec"; // <-- PEGA AQUÍ la URL .../exec del Web App
 
+// Base de datos de la app de Yesy (Supabase)
+const SUPABASE_URL  = "https://ibxcsbtpqdqbkwhikwfu.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlieGNzYnRwcWRxYmt3aGlrd2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjIwMDMsImV4cCI6MjA5NzI5ODAwM30._6R5_gA0h_9xHXzIIl8P56QlajSP7d9D2jyYMP83jtc";
+
 async function submitBooking(d){
+  // 1) Guardar en la base de datos -> aparece en la app de Yesy
+  await fetch(SUPABASE_URL + "/rest/v1/bookings", {
+    method:'POST',
+    headers:{
+      'apikey': SUPABASE_ANON,
+      'Authorization': 'Bearer ' + SUPABASE_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      nombre:       d.nombre,
+      telefono:     d.telefono,
+      correo:       d.correo || null,
+      tipo_evento:  d.tipoEvento,
+      fecha_evento: d.fechaEvento,
+      ciudad:       d.ciudad,
+      lugar:        d.lugar,
+      hora_llegada: d.horaLlegada,
+      hora_recoger: d.horaRecoger,
+      presupuesto:  d.presupuesto || null,
+      detalles:     d.detalles || null,
+      estado:       'nueva'
+    })
+  });
+
+  // 2) (opcional) Google Calendar, si sigue configurado
   if(GCAL_ENDPOINT){
-    // 'no-cors' + text/plain = envío directo a Apps Script sin bloqueos del navegador
-    await fetch(GCAL_ENDPOINT,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(d)
-    });
-  }else{
-    console.log('📋 bookingData (sin endpoint aún):',d);
+    try{
+      await fetch(GCAL_ENDPOINT,{ method:'POST', mode:'no-cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(d) });
+    }catch(e){ /* no bloquear la reserva si el calendario falla */ }
   }
   return true;
 }
