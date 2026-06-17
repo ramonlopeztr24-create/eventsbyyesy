@@ -109,7 +109,7 @@ body::after{
 /* ════════════════════════════════════════════════════════════════════
    3 · PÉTALOS Y DESTELLOS  (la magia, sutil)
    ════════════════════════════════════════════════════════════════════ */
-#petals{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+#petals{position:absolute;top:0;left:0;right:0;height:100vh;z-index:2;pointer-events:none;overflow:hidden}
 .petal{position:absolute;top:-8%;will-change:transform,opacity;animation:fall linear infinite}
 .petal.rose{width:15px;height:15px;background:radial-gradient(circle at 30% 30%,var(--blush-soft),var(--blush));border-radius:80% 5% 80% 5%;opacity:.5}
 .petal.spark{width:5px;height:5px;border-radius:50%;background:var(--gold-lt);box-shadow:0 0 8px 2px rgba(230,201,138,.7);opacity:.85}
@@ -491,8 +491,7 @@ footer a:hover{color:var(--gold-lt)}
       </h1>
       <p class="hero-sub" data-i18n="hero_sub">Decoración de lujo para Quinceañeras y todo tipo de eventos. Transformamos tu salón en algo de revista. Reserva tu fecha hoy.</p>
       <div class="hero-cta">
-        <a href="#reservar" class="btn btn-gold" data-i18n="hero_cta1">Reserva tu fecha</a>
-        <a href="#transformacion" class="btn btn-outline" data-i18n="hero_cta2">Ver transformaciones</a>
+        <a href="#reservar" class="btn btn-gold" data-i18n="hero_cta1">Pide tu cotización</a>
       </div>
       <div class="hero-trust">
         <div class="t"><b>+120</b><span data-i18n="trust_1">eventos creados</span></div>
@@ -525,7 +524,7 @@ footer a:hover{color:var(--gold-lt)}
     <div class="section-head reveal">
       <span class="kicker" data-i18n="svc_kicker">Lo que creamos</span>
       <h2 class="title" data-i18n="svc_title">Cada detalle, una obra</h2>
-      <p class="sub" style="margin-top:1rem" data-i18n="svc_sub">Nos especializamos en Quinceañeras y diseñamos cada elemento para que tu evento se sienta —y se vea— de revista.</p>
+      <p class="sub" style="margin-top:1rem" data-i18n="svc_sub">Nos especializamos en Quinceañeras y diseñamos cada elemento para que tu evento se sienta y se vea de revista.</p>
     </div>
 
     <div class="svc-index reveal">
@@ -822,7 +821,7 @@ footer a:hover{color:var(--gold-lt)}
           <button type="button" class="btn btn-quiet" id="btnPrev" style="visibility:hidden;border:1px solid var(--ivory-2);background:transparent;color:var(--wine)" data-i18n="btn_prev">‹ Atrás</button>
           <span class="spacer"></span>
           <button type="button" class="btn btn-gold" id="btnNext" data-i18n="btn_next">Siguiente ›</button>
-          <button type="submit" class="btn btn-gold" id="btnSubmit" style="display:none" data-i18n="btn_submit">Reservar mi fecha ✦</button>
+          <button type="submit" class="btn btn-gold" id="btnSubmit" style="display:none" data-i18n="btn_submit">Pedir mi cotización ✦</button>
         </div>
       </form>
 
@@ -849,9 +848,9 @@ footer a:hover{color:var(--gold-lt)}
     <div class="foot-contact">
       <h4 data-i18n="foot_contact">Contacto</h4>
       
-      <a href="tel:+10000000000">📞 (714) 000-0000</a>
+      <a href="tel:+17146434902">📞 (714) 643-4902</a>
       <a href="https://instagram.com/eventsbyyesy" target="_blank" rel="noopener">📷 @eventsbyyesy</a>
-      <a class="wa-btn" href="https://wa.me/10000000000?text=Hola%20Yesy%2C%20quiero%20informaci%C3%B3n%20para%20mi%20evento" target="_blank" rel="noopener">
+      <a class="wa-btn" href="https://wa.me/17146434902?text=Hola%20Yesy%2C%20quiero%20informaci%C3%B3n%20para%20mi%20evento" target="_blank" rel="noopener">
         <span>🟢</span> <span data-i18n="foot_wa">Escríbenos por WhatsApp</span>
       </a>
     </div>
@@ -868,7 +867,7 @@ footer a:hover{color:var(--gold-lt)}
 </footer>
 
 <div class="sticky-cta">
-  <a href="#reservar" class="btn btn-gold" data-i18n="hero_cta1">Reserva tu fecha</a>
+  <a href="#reservar" class="btn btn-gold" data-i18n="hero_cta1">Pide tu cotización</a>
 </div>
 
 <div class="lightbox" id="lightbox">
@@ -1093,10 +1092,10 @@ const I18N={en:{
   hero_kicker:'Event atelier · Orange County',
   hero_h1_1:'We make her day',hero_h1_2:'a memory that lasts',hero_h1_3:'forever',
   hero_sub:'Luxury decoration for Quinceañeras and all kinds of events. We transform your venue into something magazine-worthy. Book your date today.',
-  hero_cta1:'Book your date',hero_cta2:'See transformations',
+  hero_cta1:'Request your quote',hero_cta2:'See transformations',
   trust_1:'events created',trust_2:'in reviews',trust_3:'in Spanish',
   tag_antes:'Before',tag_despues:'After',scroll:'Discover',
-  svc_kicker:'What we create',svc_title:'Every detail, a work of art',svc_sub:'We specialize in Quinceañeras and design every element so your event feels — and looks — magazine-worthy.',
+  svc_kicker:'What we create',svc_title:'Every detail, a work of art',svc_sub:'We specialize in Quinceañeras and design every element so your event feels and looks magazine-worthy.',
   svc1_t:'Quinceañera Decoration',svc1_p:'Complete, elegant design for your daughter’s most special day.',
   svc2_t:'Backdrops & Photo Areas',svc2_p:'Drapes, flowers, sequins and lights for unforgettable photos.',
   svc3_t:'Centerpieces & Flowers',svc3_p:'Floral and table arrangements that elevate the whole room.',
@@ -1131,7 +1130,7 @@ const I18N={en:{
   f_llegada:'Setup time',f_recoger:'Pickup time',f_tipo:'Event type',f_budget:'Approximate budget',b_unsure:'Not sure yet',
   f_boda:'Wedding',f_cumple:'Birthday',f_bautizo:'Baptism',f_baby:'Baby Shower',f_grad:'Graduation',f_otro:'Other',
   f_detalles:'Any detail or theme in mind?',f_detalles_ph:'e.g. Pink & gold theme, 150 guests, floral backdrop...',
-  err_req:'This field is required.',btn_prev:'‹ Back',btn_next:'Next ›',btn_submit:'Reserve my date ✦',
+  err_req:'This field is required.',btn_prev:'‹ Back',btn_next:'Next ›',btn_submit:'Request my quote ✦',
   ok_h:'Thank you!',ok_p:'We received your request. Yesy will contact you very soon to confirm your date.',ok_btn:'Send another request',
   foot_tag:'Luxury decoration atelier for Quinceañeras and events in Orange County, CA.',
   foot_contact:'Contact',foot_wa:'Message us on WhatsApp',foot_hours:'Hours',foot_hours_p:'Mon to Sun · 9am – 8pm',foot_area:'Serving all of Orange County',foot_rights:'All rights reserved'
