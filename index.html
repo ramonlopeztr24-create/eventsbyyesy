@@ -394,9 +394,10 @@ header.nav.scrolled{
 .field input,.field select,.field textarea{width:100%;font-family:var(--sans);font-size:1rem;color:var(--ink);padding:14px 16px;border:1.5px solid var(--ivory-2);border-radius:8px;background:var(--ivory);transition:border-color .25s,box-shadow .25s}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(198,162,83,.16);background:#fff}
 .field textarea{resize:vertical;min-height:100px}
-.field.error input,.field.error select{border-color:#c75b73;box-shadow:0 0 0 4px rgba(199,91,115,.14)}
+.field.error input,.field.error select,.field.date-blocked input{border-color:#c75b73;box-shadow:0 0 0 4px rgba(199,91,115,.14)}
 .field .err{display:none;color:#bb4a64;font-size:.8rem;margin-top:6px}
-.field.error .err{display:block}
+.field.error .err:not(.err-blocked){display:block}
+.field.date-blocked .err-blocked{display:block}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 /* selección de paquete (chips) */
 .pkg-pick{display:flex;gap:10px;flex-wrap:wrap}
@@ -722,8 +723,9 @@ footer a:hover{color:var(--gold-lt)}
             <p class="hint" data-i18n="s2_hint">La fecha es la que apartaremos en nuestra agenda.</p>
             <div class="field">
               <label data-i18n="f_fecha">Fecha del evento <span class="req">*</span></label>
-              <input type="date" name="fechaEvento" required />
+              <input type="date" name="fechaEvento" id="fechaEvento" required />
               <span class="err" data-i18n="err_req">Este campo es obligatorio.</span>
+              <span class="err err-blocked" data-i18n="err_blocked">Esa fecha ya no está disponible. Por favor elige otra.</span>
             </div>
             <div class="field">
               <label data-i18n="f_ciudad">Ciudad del evento <span class="req">*</span></label>
@@ -985,7 +987,31 @@ function showStep(i){
   btnPrev.style.visibility=i===0?'hidden':'visible';
   const last=i===TOTAL-1;btnNext.style.display=last?'none':'inline-flex';btnSubmit.style.display=last?'inline-flex':'none';
 }
-function validateStep(i){let ok=true;steps[i].querySelectorAll('[required]').forEach(inp=>{const f=inp.closest('.field');const v=inp.value.trim()!==''&&inp.checkValidity();f.classList.toggle('error',!v);if(!v)ok=false});return ok}
+function validateStep(i){let ok=true;steps[i].querySelectorAll('[required]').forEach(inp=>{const f=inp.closest('.field');const v=inp.value.trim()!==''&&inp.checkValidity();f.classList.toggle('error',!v);if(!v)ok=false});if(!checkFecha())ok=false;return ok}
+
+/* ════ Días bloqueados (sincroniza con la app de Yesy) ════
+   Yesy bloquea días en la app -> se guardan en Supabase (blocked_days).
+   El sitio los lee aquí para que ningún cliente pueda agendar esos días. */
+const fechaInput=document.getElementById('fechaEvento');
+const blockedDays=new Set();
+// no permitir fechas pasadas
+(function(){const hoy=new Date();const off=hoy.getTimezoneOffset()*60000;fechaInput.min=new Date(hoy-off).toISOString().slice(0,10);})();
+// traer días bloqueados desde la base de datos de la app (al terminar de cargar,
+// para que SUPABASE_URL/SUPABASE_ANON ya estén definidos más abajo en el script)
+window.addEventListener('load',()=>{
+  fetch(SUPABASE_URL+"/rest/v1/blocked_days?select=day",{
+    headers:{'apikey':SUPABASE_ANON,'Authorization':'Bearer '+SUPABASE_ANON}
+  }).then(r=>r.ok?r.json():[]).then(rows=>{
+    rows.forEach(x=>blockedDays.add(x.day));
+  }).catch(()=>{});
+});
+function checkFecha(){
+  const f=fechaInput.closest('.field');
+  const blocked=fechaInput.value && blockedDays.has(fechaInput.value);
+  f.classList.toggle('date-blocked',!!blocked);
+  return !blocked;
+}
+fechaInput.addEventListener('change',checkFecha);
 btnNext.addEventListener('click',()=>{if(!validateStep(current))return;if(current<TOTAL-1){current++;showStep(current)}});
 btnPrev.addEventListener('click',()=>{if(current>0){current--;showStep(current)}});
 form.addEventListener('input',e=>{const f=e.target.closest('.field');if(f&&f.classList.contains('error'))f.classList.remove('error')});
@@ -1043,6 +1069,7 @@ async function submitBooking(d){
 }
 form.addEventListener('submit',async e=>{
   e.preventDefault();if(!validateStep(current))return;
+  if(!checkFecha()){current=1;showStep(1);fechaInput.focus();return;}
   const fd=new FormData(form);
   const d={nombre:fd.get('nombre'),telefono:fd.get('telefono'),correo:fd.get('correo'),fechaEvento:fd.get('fechaEvento'),ciudad:fd.get('ciudad'),lugar:fd.get('lugar'),horaLlegada:fd.get('horaLlegada'),horaRecoger:fd.get('horaRecoger'),tipoEvento:fd.get('tipoEvento'),presupuesto:fd.get('presupuesto'),detalles:fd.get('detalles')};
   btnSubmit.disabled=true;btnSubmit.textContent='…';
@@ -1104,7 +1131,7 @@ const I18N={en:{
   f_llegada:'Setup time',f_recoger:'Pickup time',f_tipo:'Event type',f_budget:'Approximate budget',b_unsure:'Not sure yet',
   f_boda:'Wedding',f_cumple:'Birthday',f_bautizo:'Baptism',f_baby:'Baby Shower',f_grad:'Graduation',f_otro:'Other',
   f_detalles:'Any detail or theme in mind?',f_detalles_ph:'e.g. Pink & gold theme, 150 guests, floral backdrop...',
-  err_req:'This field is required.',btn_prev:'‹ Back',btn_next:'Next ›',btn_submit:'Request my quote ✦',
+  err_req:'This field is required.',err_blocked:'That date is no longer available. Please choose another.',btn_prev:'‹ Back',btn_next:'Next ›',btn_submit:'Request my quote ✦',
   ok_h:'Thank you!',ok_p:'We received your request. Yesy will contact you very soon to confirm your date.',ok_btn:'Send another request',
   foot_tag:'Luxury decoration atelier for Quinceañeras and events in Orange County, CA.',
   foot_contact:'Contact',foot_wa:'Message us on WhatsApp',foot_hours:'Hours',foot_hours_p:'Mon to Sun · 9am – 8pm',foot_area:'Serving all of Orange County',foot_rights:'All rights reserved'
